@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./images/favicon.ico"> -->
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+
+  <!-- Custom styles for this web application -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+    crossorigin="anonymous">
+  <link href="./css/app.css" rel="stylesheet">
+
+  <title>Full Stack Development I</title>
+</head>
+
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+          <img src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top"
+            alt="">
+          Etherscan
+        </a>
+
+        <div class="collapse navbar-collapse" id="navbarsFirst">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#">LOGIN</a>
+            </li>
+          </ul>
+
+          <form class="form-inline my-2 my-md-0">
+            <!-- <input class="form-control" type="text" placeholder="Search"> -->
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">GO</button>
+          </form>
+        </div>
+      </nav>
+
+      <!-- <div class="nav-scroller bg-white box-shadow"> -->
+      <!-- <nav class="nav nav-underline"> -->
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <!-- <a class="nav-link active" href="#">Dashboard</a>
+      <a class="nav-link" href="#">Explore</a>
+      <a class="nav-link" href="#">Suggestions</a>
+      <a class="nav-link" href="#">Link</a>
+      <a class="nav-link" href="#">Link</a>
+      <a class="nav-link" href="#">Link</a>
+      <a class="nav-link" href="#">Link</a>
+      <a class="nav-link" href="#">Link</a> -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsSecond" aria-controls="navbarsSecond"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarsSecond">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">HOME <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdownBlockChain" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">BLOCKCHAIN</a>
+              <div class="dropdown-menu" aria-labelledby="dropdownBlockChain">
+                <a class="dropdown-item" href="#">View Txns</a>
+                <a class="dropdown-item" href="#">View Pending Txns</a>
+                <a class="dropdown-item" href="#">View Contract Internal Txns</a>
+                <a class="dropdown-item" href="#">View Blocks</a>
+                <a class="dropdown-item" href="#">View Uncles</a>
+                <a class="dropdown-item" href="#">Top Accounts</a>
+                <a class="dropdown-item" href="#">Verified Contracts</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdownTokens" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">TOKENS</a>
+              <div class="dropdown-menu" aria-labelledby="dropdownTokens">
+                <a class="dropdown-item" href="#">ERC-20 Top Tokens</a>
+                <a class="dropdown-item" href="#">View ERC-20 Transfers</a>
+                <a class="dropdown-item" href="#">ERC-721 Top Tokens</a>
+                <a class="dropdown-item" href="#">View ERC-721 Transfers</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdownResources" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">RESOURCES</a>
+              <div class="dropdown-menu" aria-labelledby="dropdownResources">
+                <a class="dropdown-item" href="#">Ethereum Directory</a>
+                <a class="dropdown-item" href="#">Charts and Stats</a>
+                <a class="dropdown-item" href="#">Interactive Chart and Starts</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdownMore" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">MORE</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <!-- </div> -->
+    </div>
+    <!-- <main role="main" class="container"> -->
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="profile" style="padding: 20px; background: #f7f7f7;">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="block block-blue">
+                  <!-- <i class="icon-globe hidden-su-xs hidden-sm" style="margin-right:16px"></i> -->
+                  <img src="./images/Global.png" class="icon-globe" style="margin-right: 16px;" />
+                  <span class="heading" rel='tooltip' data-placement='right' title='View More'><a href="/stat/supply">
+                      <font size=2 color=' white'>MARKET CAP OF <span id='marketcap'>$11.539</span>
+                        <span class='hidden-su-xs'>Billion</span>
+                        <!-- <span class='visible-su-xs'>B</span> -->
+                      </font>
+                    </a></span>
+                  <label class="switch pull-right" id='labelswitch' rel='tooltip' title=''>
+                    <!-- <input type="checkbox" id="togglesocket" checked> -->
+                    <span class="slider"></span>
+                  </label>
+                  <h4 style="margin-top:2px">
+                    <font color='white'><a href='/chart/etherprice' rel='tooltip' data-placement='right' title='View Historical Ether Price'>
+                        <font color='white'><span id='price'>$110.22 @ 0.0315</span> BTC/ETH</font> <span id='price_percent'
+                          style='display: inline-block;'>
+                          <font color='#0ADC00' size='2'> <i class='fa fa-caret-up' style='font-size: 1em; margin-top:8px; margin-right:3px; color:#0ADC00'></i><b>2.44%</b></font>
+                        </span>
+                      </a></font>
+                  </h4>
+
+                  <div class="clearfix margin-bottom-5"></div>
+                  <div class="row margin-bottom-20">
+                    <div class="col-sm-6 caption-sm">
+                      <small>
+                        <a href="blocks" rel='tooltip' data-placement='right' title="View List of Blocks">
+                          <font color="white">Last Block</font>
+                        </a>
+                      </small>
+                      <h4 style="color: #FFFFFF"><span id="ContentPlaceHolder1_LitLastBlock" style="font-size:Larger;"><a
+                            href="blocks" rel='tooltip' data-placement='bottom' title="The Lastest Block No">
+                            <font color="white"><span id='lastblock'>7166363</span></font>
+                          </a></span>
+                        <span class='hidden-xs' rel='tooltip' data-placement='right' title='Average Block Time (The Lastest 5000 Block)'>
+                          <font size='2' style='font-weight:350'> (<span id='avgblocktime'>17.3s</span>)</font>
+                        </span></h4>
+                    </div>
+                    <div class="col-sm-6 text-right caption-sm">
+                      <small>
+                        <a href="txs" rel='tooltip' data-placement='left' title="View List of Transactions">
+                          <font color="white">
+                            <span class="hidden-su-xs">Transactions</span>
+                            <!-- <span class="visible-su-xs">TXNS</span> -->
+                          </font>
+                        </a>
+                      </small>
+                      <h4>
+                        <span id='transactions'>
+                          <a href='/txs' rel='tooltip' data-placement='left' title='Total Transactions Counter<br>(Update Every 5 mins)'>
+                            <font color='white'>386.38 M</font>
+                          </a>
+                          <span class='hidden-xs' rel='tooltip' data-placement='bottom' title='Txns per second'>
+                            <font size='2' style='font-weight:350'> (4.7 TPS)</font>
+                          </span>
+                        </span>
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="statistics">
+                    <h3 class="heading-xs"><a href="/chart/hashrate" rel='tooltip' data-placement='right' title="View Hash Rate Chart">
+                        <font color="white">Hash Rate</font>
+                      </a>
+                      <a href="/chart/difficulty" class="pull-right" rel='tooltip' data-placement='left' title="View Difficulty Growth Chart">
+                        <font color="white">Network Difficulty</font>
+                      </a></h3>
+                    <font color="white">
+                      <span rel='tooltip' data-placement='bottom' title='Avg Hash Rate (The Last 12 Hours)'>
+                        <span id='hashrate'>145,643.59</span> GH/s</span>&nbsp;
+                    </font>
+                    <span class="pull-right" rel='tooltip' data-placement='bottom' title="Average Difficulty">
+                      <font color=white><span id='netdiff'>2,368.77 TH</span></font>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="tag-box tag-box-v2 box-shadow shadow-effect-1 block-chart">
+                  <div id="containerchart" style="min-width: 255px; max-width: 510px; height: 210px; margin: 0 auto">
+                    <img src="images/Chart.png" style="min-width: 255px; max-width: 510px; height: 210px;" />
+                  </div>
+                  <!-- <script src="highcharts/js/highcharts.js"></script> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- </main> -->
+  </div>
+  <!-- Optional JavaScript -->
+  <script src="./js/app.js"></script>
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
