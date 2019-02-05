@@ -18,6 +18,16 @@ h4 {
     padding: 20px;
 }
 
+.profile tooltip {
+    font-size: 44px;
+}
+
+.block a {
+    /* text-decoration: #fff; */
+    color: #FFFFFF;
+    /* font-size: small; */
+}
+
 .block-blue {
     background: #3498db;
 }
@@ -28,6 +38,7 @@ h4 {
 }
 
 .block .heading,
+.caption-sm .small,
 .caption-sm small {
     color: #FFFFFF;
     opacity: .8;
@@ -41,15 +52,47 @@ h4 {
     margin: 0 20px 20px 0;
 }
 
-.caption-sm small {
+.caption-sm small,
+.caption-sm .small {
     font-size: 16px;
     text-transform: uppercase;
+}
+
+.price-percentage {
+    display: inline-block;
+    font-size: small;
+}
+
+.price-percentage .fa {
+    font-size: 1em;
+    margin-top: 8px;
+    margin-right: 3px;
+}
+
+.price-percentage .fa-caret-up,
+.price-percentage .up {
+    color: #0ADC00;
+}
+
+.price-percentage .fa-caret-down,
+.price-percentage .down {
+    color: brown;
+}
+
+.caption-sm .avg-number {
+    font-size: small;
+    font-weight: 100;
 }
 
 .block .caption-sm h4 {
     font-size: 16px;
     line-height: .8;
     color: white;
+    margin-top: 5px;
+}
+
+.block .statistics {
+    color: #FFFFFF;
 }
 
 .block .statistics .heading-xs {
@@ -75,4 +118,81 @@ h3.heading-xs {
 
 .margin-bottom-20 {
     margin-bottom: 20px;
+}
+
+/* https://www.w3schools.com/howto/howto_css_switch.asp */
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 26px;
+    height: 14px;
+}
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    display: none;
+}
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 1px;
+    bottom: 1px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: #33DDFF;
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px #33DDFF;
+}
+input:checked + .slider:before {
+    -webkit-transform: translateX(12px);
+    -ms-transform: translateX(12px);
+    transform: translateX(12px);
+}
+
+/* Tooltip - custom style */
+.tooltip-qm {
+    font-size: 10px;
+}
+.tooltip-inner {
+    font-size: 10px;
+    background: #808080;
+    color: rgb(255, 255, 255, .8);
+    border: 1px solid #808080;
+}
+.tooltip.show {
+    opacity: 1;
+}
+.bs-tooltip-top .arrow::before {
+    border-top-color: #808080;
+}
+.bs-tooltip-right .arrow::before {
+    border-right-color: #808080;
+}
+.bs-tooltip-auto .arrow::before,
+.bs-tooltip-bottom .arrow::before {
+    border-bottom-color: #808080;
+}
+.bs-tooltip-left .arrow::before {
+    border-left-color: #808080;
 }
