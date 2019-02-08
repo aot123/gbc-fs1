@@ -40,6 +40,7 @@ $(function () {
             if (timer !== null) return;
             timer = setInterval(function () {
                 console.log(++value);
+                buildBlueBox();
             }, interval);
         } else {
             // Checkbox is not checked..
@@ -47,6 +48,4 @@ $(function () {
             timer = null;
         }
     });
-
-    buildBlueBox();
 });
