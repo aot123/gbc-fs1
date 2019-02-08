@@ -131,6 +131,12 @@ Dashboard = {
     },
     viewBlockInfo: function (e) {
         let blockInfo = e.data.blockInfo;
+        var minedAt = new Date(parseInt(blockInfo.timestamp, 16) * 1000),
+            dateString = moment(minedAt, "MM/DD/YYYY"),
+            timestampStr = moment(minedAt).fromNow() + ' (' + moment(minedAt).format('MMM-DD-YYYY HH:mm:ss A ZZ') + ')';
+        // console.log(moment(minedAt).format('MMM-DD-YYYY HH:mm:ss A ZZ'));
+        // console.log(moment(dateString).fromNow());
+        console.log(timestampStr);
 
         Utils.populateData('#block-height', parseInt(blockInfo.number, 16));
         Utils.populateData('#block-timestamp', timestampStr);
