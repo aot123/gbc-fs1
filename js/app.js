@@ -10,10 +10,13 @@ const GET_LAST_PRICE_URL = `${HOST_URL}?module=stats&action=ethprice&apikey=${AP
 Dashboard = {
     lastPriceText: null,
     lastBlockNo: null,
+    lastBlock: null,
+    prevBlock: null,
     init: function () {
         $('[data-toggle="tooltip"]').tooltip();
         // $('.nav-tabs a[href="#overview"]').tab('show');
         $("#toggle-realtime").change(this.toggleRealTime);
+        // $("#last-block").on('click', { blockInfo: this.lastBlock }, this.viewBlockInfo);
         // build components for first time
         // Dashboard.startRealTime();
         // $("#toggle-realtime").trigger('change');
@@ -61,7 +64,11 @@ Dashboard = {
                             Utils.fetchData(GET_BLOCK_BY_NO_URL + prevBlockNo),
                             Utils.fetchData(GET_LAST_PRICE_URL)
                         ]);
+                        // update last block and prev one
+                        self.lastBlock = currentBlock.result;
+                        self.prevBlock = prevBlock.result;
 
+                        // update blue box's data
                         self.displayLastPrice(lastPrice);
                         self.displayCurrentPercentage();
                         self.displayLastBlock(currentBlock, prevBlock);
@@ -119,6 +126,28 @@ Dashboard = {
         Utils.populateData('#last-block', currentBlockNo);
         Utils.populateData('#avg-block-time', `${timeDiff}s`);
         Utils.populateData('#transactions', totalTxnsOfCurrentBlock);
+
+        $("#last-block").on('click', { blockInfo: currentBlock.result }, this.viewBlockInfo);
+    },
+    viewBlockInfo: function (e) {
+        let blockInfo = e.data.blockInfo;
+
+        Utils.populateData('#block-height', parseInt(blockInfo.number, 16));
+        Utils.populateData('#block-timestamp', timestampStr);
+        Utils.populateData('#block-transactions-no', blockInfo.transactions.length);
+        Utils.populateData('#block-hash', blockInfo.hash);
+        Utils.populateData('#block-parent-hash', blockInfo.parentHash);
+        Utils.populateData('#block-sha3-uncles', blockInfo.sha3Uncles);
+        Utils.populateData('#block-mined-by', blockInfo.miner);
+        Utils.populateData('#block-difficulty', blockInfo.difficulty);
+        Utils.populateData('#block-total-difficulty', blockInfo.totalDifficulty);
+        Utils.populateData('#block-size', parseInt(blockInfo.size, 16) + ' bytes');
+        Utils.populateData('#block-gas-used', blockInfo.gasUsed);
+        Utils.populateData('#block-gas-limit', parseInt(blockInfo.gasLimit, 16));
+        Utils.populateData('#block-nonce', blockInfo.nonce);
+        Utils.populateData('#block-reward', blockInfo.timestamp);
+        Utils.populateData('#block-uncles-reward', blockInfo.timestamp);
+        Utils.populateData('#block-extra-data', blockInfo.extraData);
     }
 };
 
