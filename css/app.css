@@ -197,3 +197,43 @@ input:checked + .slider:before {
 .bs-tooltip-left .arrow::before {
     border-left-color: #808080;
 }
+
+.margin-bottom-15 {
+    margin-bottom: 15px;
+}
+
+.profile .nav-tabs {
+    border: none;
+    background: 0 0;
+    border-bottom: solid 2px #3498db;
+    align-items: center;
+}
+
+.profile .nav-tabs .active {
+    background: #3498db;
+    color: #ffffff;
+}
+
+.profile .nav-tabs .fa-window-close {
+    margin-left: auto;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.profile .tab-content .panel {
+    /* margin-bottom: 20px; */
+    background-color: #ffffff;
+    border: 1px solid transparent;
+}
+
+.profile .tab-content .panel-info {
+    border-color: #bce8f1;
+}
+
+.tab-content .panel .panel-heading {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    padding: 5px 15px;
+    border-bottom: 1px solid transparent;
+}
