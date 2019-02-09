@@ -1,25 +1,30 @@
-// const API_KEY_TOKEN = '88NRNJF5CN9Y4H19WB25UD294HQKWS7IX1';
-const API_KEY_TOKEN = 'test';
-const INTERVAL = 7000;
+const API_KEY_TOKEN = 'ACWZM8ZM91G1TJYABPQHE1281FEPJKGVD9';
 const HOST_URL = 'https://api.etherscan.io/api';
 const GET_LAST_BLOCK_URL = `${HOST_URL}?module=proxy&action=eth_blockNumber&apikey=${API_KEY_TOKEN}`;
 const GET_BLOCK_BY_NO_URL = `${HOST_URL}?module=proxy&action=eth_getBlockByNumber&boolean=true&apikey=${API_KEY_TOKEN}&tag=`;
-// const GET_BLOCK_TRANSACTION_COUNT_BY_NUMBER_URL = `${HOST_URL}?module=proxy&action=eth_getBlockTransactionCountByNumber&apikey=${API_KEY_TOKEN}&tag=`;
 const GET_LAST_PRICE_URL = `${HOST_URL}?module=stats&action=ethprice&apikey=${API_KEY_TOKEN}`;
+const INTERVAL = 7000;
 
 Dashboard = {
-    lastPriceText: null,
-    lastBlockNo: null,
-    lastBlock: null,
-    prevBlock: null,
+    currentPriceText: null,
+    currentBlockNo: null,
+    prevBlockNo: null,
+    nextBlockNo: null,
+    blocks: {},
     init: function () {
-        $('[data-toggle="tooltip"]').tooltip();
-        // $('.nav-tabs a[href="#overview"]').tab('show');
-        $("#toggle-realtime").change(this.toggleRealTime);
-        // $("#last-block").on('click', { blockInfo: this.lastBlock }, this.viewBlockInfo);
+        $('[data-toggle="tooltip"]').tooltip({
+            trigger: 'hover'
+        });
+
+        $('#toggle-realtime').on('change', this.toggleRealTime);
+        $('#last-block').on('click', $.proxy(this.viewBlockInfo, this));
+        $('#block-navigation').on('click', $.proxy(this.navigateBlock, this));
+        $('#close-block-info').on('click', function () {
+            $('#block-info-container').hide();
+        });
         // build components for first time
-        // Dashboard.startRealTime();
-        // $("#toggle-realtime").trigger('change');
+        this.startRealTime();
+        $("#toggle-realtime").trigger('change');
     },
     toggleRealTime: (function () {
         var _timer = null,
@@ -29,11 +34,11 @@ Dashboard = {
                 // enable realtime update...
                 $('#label-switch').attr('data-original-title', '+Realtime Updates Enabled, Click to Disable');
 
-                // if (_timer !== null) return;
-                // _timer = setInterval(function () {
-                //     Dashboard.startRealTime();
-                // }, _interval);
-                Dashboard.startRealTime();
+                if (_timer !== null) return;
+                _timer = setInterval(function () {
+                    Dashboard.startRealTime();
+                }, _interval);
+                // Dashboard.startRealTime();
             } else {
                 // disable realtime update...
                 $('#label-switch').attr('data-original-title', 'Realtime Updates Disabled, Click to Enable');
@@ -51,47 +56,44 @@ Dashboard = {
         let self = this;
         Utils.fetchData(GET_LAST_BLOCK_URL)
             .then(async function (data) {
-                let currentBlockNo = data.result;
-                if (self.lastBlockNo !== currentBlockNo) {
-                    // update last block no
-                    self.lastBlockNo = currentBlockNo;
+                let lastBlockNo = data;
+                if (self.currentBlockNo !== lastBlockNo) {
+                    // update current block no
+                    self.currentBlockNo = lastBlockNo;
 
                     // get prev block no
-                    let prevBlockNo = '0x' + (currentBlockNo - 1).toString(16);
+                    let prevBlockNo = Utils.getPrevBlockNo(lastBlockNo);
                     try {
                         let [currentBlock, prevBlock, lastPrice] = await Promise.all([
-                            Utils.fetchData(GET_BLOCK_BY_NO_URL + currentBlockNo),
+                            Utils.fetchData(GET_BLOCK_BY_NO_URL + lastBlockNo),
                             Utils.fetchData(GET_BLOCK_BY_NO_URL + prevBlockNo),
                             Utils.fetchData(GET_LAST_PRICE_URL)
                         ]);
-                        // update last block and prev one
-                        self.lastBlock = currentBlock.result;
-                        self.prevBlock = prevBlock.result;
+                        // cache these blocks for viewing block info feature
+                        self.blocks[lastBlockNo] = currentBlock;
+                        // self.blocks[prevBlockNo] = prevBlock;
+                        self.prevBlockNo = prevBlockNo;
+
+                        // get time diff between latest block and prev one
+                        // and store for using it later
+                        currentBlock['timeDiff'] = currentBlock.timestamp - prevBlock.timestamp;
 
                         // update blue box's data
                         self.displayLastPrice(lastPrice);
                         self.displayCurrentPercentage();
-                        self.displayLastBlock(currentBlock, prevBlock);
+                        self.displayLastBlock(currentBlock);
                     }
                     catch (err) {
                         throw new Error('Something went wrong...\n' + err);
-                    };
+                    }
                 }
             });
     },
     displayLastPrice: function (data) {
-        // Utils.fetchData(GET_LAST_PRICE_URL)
-        //     .then(data => {
-        //         let currentPriceText = `$${data.result.ethusd} @ ${data.result.ethbtc}`;
-        //         if (this.lastPriceText !== currentPriceText) {
-        //             this.lastPriceText = currentPriceText;
-        //             Utils.populateData('#price', currentPriceText);
-        //         }
-        //     });
-        let currentPriceText = `$${data.result.ethusd} @ ${data.result.ethbtc}`;
-        if (this.lastPriceText !== currentPriceText) {
-            this.lastPriceText = currentPriceText;
-            Utils.populateData('#price', currentPriceText);
+        let lastPriceText = `$${data.ethusd} @ ${data.ethbtc}`;
+        if (this.currentPriceText !== lastPriceText) {
+            this.currentPriceText = lastPriceText;
+            Utils.populateData('#price', lastPriceText);
         }
     },
     displayCurrentPercentage: function () {
@@ -105,55 +107,121 @@ Dashboard = {
         // update percentage of ether price
         Utils.populateData('#price-percent', percentageHtml);
     },
-    displayLastBlock: function (currentBlock, prevBlock) {
-        // Utils.fetchData(GET_LAST_BLOCK_URL)
-        //     .then(data => {
-        //         // convert block no from hex to decimal
-        //         let currentBlockNo = parseInt(data.result, 16);
-        //         if (this.lastBlockNo !== currentBlockNo) {
-        //             this.lastBlockNo = currentBlockNo;
-        //             Utils.populateData('#last-block', currentBlockNo);
-        //         }
-        //     });
-
+    displayLastBlock: function (block) {
         // convert block no from hex to decimal
         // and get time diff between latest block and prev one
         // and get total transactions of latest block
-        let currentBlockNo = parseInt(currentBlock.result.number, 16),
-            timeDiff = currentBlock.result.timestamp - prevBlock.result.timestamp,
-            totalTxnsOfCurrentBlock = currentBlock.result.transactions.length;
-
-        Utils.populateData('#last-block', currentBlockNo);
-        Utils.populateData('#avg-block-time', `${timeDiff}s`);
-        Utils.populateData('#transactions', totalTxnsOfCurrentBlock);
-
-        $("#last-block").on('click', { blockInfo: currentBlock.result }, this.viewBlockInfo);
+        Utils.populateData('#last-block', Utils.hexToDecimal(block.number));
+        Utils.populateData('#avg-block-time', `${block.timeDiff}s`);
+        Utils.populateData('#transactions', block.transactions.length);
     },
     viewBlockInfo: function (e) {
-        let blockInfo = e.data.blockInfo;
-        var minedAt = new Date(parseInt(blockInfo.timestamp, 16) * 1000),
-            dateString = moment(minedAt, "MM/DD/YYYY"),
-            timestampStr = moment(minedAt).fromNow() + ' (' + moment(minedAt).format('MMM-DD-YYYY HH:mm:ss A ZZ') + ')';
-        // console.log(moment(minedAt).format('MMM-DD-YYYY HH:mm:ss A ZZ'));
-        // console.log(moment(dateString).fromNow());
-        console.log(timestampStr);
+        if (this.currentBlockNo) {
+            let blockInfo = this.blocks[this.currentBlockNo];
+            this.prevBlockNo = Utils.getPrevBlockNo(this.currentBlockNo);
+            this.nextBlockNo = null;
+            this.displayBlockInfo(blockInfo);
+        }
+    },
+    displayBlockInfo: function (blockInfo) {
+        if (blockInfo) {
+            let minedAt = new Date(Utils.hexToDecimal(blockInfo.timestamp) * 1000),
+                timestampStr = moment(minedAt).fromNow() + ' (' + moment(minedAt).format('MMM-DD-YYYY hh:mm:ss A Z') + ')',
+                gasUsed = Utils.hexToDecimal(blockInfo.gasUsed),
+                gasLimit = Utils.hexToDecimal(blockInfo.gasLimit),
+                gasUsedPercentage = (100 * gasUsed / gasLimit).toFixed(2);
 
-        Utils.populateData('#block-height', parseInt(blockInfo.number, 16));
-        Utils.populateData('#block-timestamp', timestampStr);
-        Utils.populateData('#block-transactions-no', blockInfo.transactions.length);
-        Utils.populateData('#block-hash', blockInfo.hash);
-        Utils.populateData('#block-parent-hash', blockInfo.parentHash);
-        Utils.populateData('#block-sha3-uncles', blockInfo.sha3Uncles);
-        Utils.populateData('#block-mined-by', blockInfo.miner);
-        Utils.populateData('#block-difficulty', blockInfo.difficulty);
-        Utils.populateData('#block-total-difficulty', blockInfo.totalDifficulty);
-        Utils.populateData('#block-size', parseInt(blockInfo.size, 16) + ' bytes');
-        Utils.populateData('#block-gas-used', blockInfo.gasUsed);
-        Utils.populateData('#block-gas-limit', parseInt(blockInfo.gasLimit, 16));
-        Utils.populateData('#block-nonce', blockInfo.nonce);
-        Utils.populateData('#block-reward', blockInfo.timestamp);
-        Utils.populateData('#block-uncles-reward', blockInfo.timestamp);
-        Utils.populateData('#block-extra-data', blockInfo.extraData);
+            Utils.populateData('#block-height', Utils.hexToDecimal(blockInfo.number));
+            Utils.populateData('#block-timestamp', timestampStr);
+            Utils.populateData('#block-transactions-no', blockInfo.transactions.length + ' transactions');
+            Utils.populateData('#block-transactions-text', 'in this Block');
+            Utils.populateData('#block-hash', blockInfo.hash);
+            Utils.populateData('#block-parent-hash', blockInfo.parentHash);
+            Utils.populateData('#block-sha3-uncles', blockInfo.sha3Uncles);
+            Utils.populateData('#block-mined-by', blockInfo.miner);
+            Utils.populateData('#block-mined-time', `in ${blockInfo.timeDiff} secs`);
+            Utils.populateData('#block-difficulty', Utils.formatMoneyWithComma(Utils.hexToDecimal(blockInfo.difficulty)));
+            Utils.populateData('#block-total-difficulty', Utils.formatMoneyWithComma(Utils.hexToDecimal(blockInfo.totalDifficulty)));
+            Utils.populateData('#block-size', Utils.hexToDecimal(blockInfo.size) + ' bytes');
+            Utils.populateData('#block-gas-used', `${gasUsed.toLocaleString('en')} (${gasUsedPercentage}%)`);
+            Utils.populateData('#block-gas-limit', gasLimit.toLocaleString('en'));
+            Utils.populateData('#block-nonce', blockInfo.nonce);
+            Utils.populateData('#block-reward', blockInfo.timestamp);
+            Utils.populateData('#block-uncles-reward', blockInfo.uncles.length);
+            Utils.populateData('#block-extra-data', `nanopool.org (Hex: ${blockInfo.extraData})`);
+
+            $('#prev-block-btn').data('block-no', this.prevBlockNo);
+            $('#next-block-btn').data('block-no', this.nextBlockNo);
+            if (this.nextBlockNo === null || this.nextBlockNo > this.currentBlockNo) {
+                $('#next-block-btn').addClass('latest');
+                $('#next-block-btn').attr('data-original-title', 'You have reached The Lastest Block');
+            } else {
+                $('#next-block-btn').removeClass('latest');
+                $('#next-block-btn').attr('data-original-title', 'View Next Block');
+            }
+
+            if ($('#block-info-container').is(":hidden")) {
+                $('#block-info-container').show();
+            }
+        }
+    },
+    getBlockInfo: async function (blockNo) {
+        let blockInfo = this.blocks[blockNo],
+            prevBlockNo = Utils.getPrevBlockNo(blockNo),
+            nextBlockNo = Utils.getNextBlockNo(blockNo);
+        if (blockInfo === undefined || blockInfo === null) {
+            try {
+                let _prevNo2 = Utils.getPrevBlockNo(prevBlockNo),
+                    _prev = this.blocks[prevBlockNo],
+                    _next = this.blocks[nextBlockNo],
+                    _prev2 = this.blocks[_prevNo2];
+                let [currentBlock, prevBlock, nextBlock, prevBlock2] = await Promise.all([
+                    Utils.fetchData(GET_BLOCK_BY_NO_URL + blockNo),
+                    _prev ? _prev : Utils.fetchData(GET_BLOCK_BY_NO_URL + prevBlockNo),
+                    _next ? _next : Utils.fetchData(GET_BLOCK_BY_NO_URL + nextBlockNo),
+                    _prev2 ? _prev2 : Utils.fetchData(GET_BLOCK_BY_NO_URL + _prevNo2)
+                ]);
+
+                // cache these blocks for viewing block info feature
+                // get time diff between latest block and prev one
+                // and store for using it later
+                if (currentBlock) {
+                    this.blocks[blockNo] = blockInfo = currentBlock;
+                    currentBlock['timeDiff'] = currentBlock.timestamp - prevBlock.timestamp;
+                }
+                if (prevBlock && _prev === null) {
+                    this.blocks[prevBlockNo] = prevBlock;
+                    prevBlock['timeDiff'] = prevBlock.timestamp - prevBlock2.timestamp;
+                }
+                if (nextBlock && _next === null) {
+                    this.blocks[nextBlockNo] = nextBlock;
+                    nextBlock['timeDiff'] = nextBlock.timestamp - currentBlock.timestamp;
+                }
+            }
+            catch (err) {
+                throw new Error('Something went wrong...\n' + err);
+            }
+        }
+        return blockInfo;
+    },
+    navigateBlock: function (e) {
+        let $target = $(e.target);
+        if ($target.hasClass('navigation-btn')) {
+            let blockNo = $target.data('block-no');
+            if (blockNo > this.currentBlockNo) {
+                return;
+            }
+            if (blockNo) {
+                this.getBlockInfo(blockNo).then((block) => {
+                    if (block) {
+                        this.prevBlockNo = Utils.getPrevBlockNo(blockNo);
+                        this.nextBlockNo = Utils.getNextBlockNo(blockNo);
+                        this.displayBlockInfo(block);
+                    }
+                });
+            }
+        }
+        e.stopPropagation();
     }
 };
 
@@ -167,36 +235,33 @@ Utils = {
                 throw new Error('Api did not respond...');
             })
             .then(data => {
-                console.log(data);
-                return data;
+                console.log(data.result);
+                return data.result;
             });
     },
     populateData: function (element, data) {
         $(element).fadeOut(0, function () {
             $(this).html(data).fadeIn(500);
         });
+    },
+    hexToDecimal: function (number) {
+        return parseInt(number, 16);
+    },
+    decimalToHex: function (number) {
+        return '0x' + (number).toString(16);
+    },
+    formatMoneyWithComma: function (amount) {
+        return amount.toLocaleString('en');
+    },
+    getNextBlockNo(blockNo) {
+        return Utils.decimalToHex(Utils.hexToDecimal(blockNo) + 1);
+    },
+    getPrevBlockNo(blockNo) {
+        return Utils.decimalToHex(Utils.hexToDecimal(blockNo) - 1);
     }
 };
 
 $(function () {
-    // var timer = null,
-    //     interval = 1000,
-    //     value = 0;
-
-    // $("#toggle-realtime").change(function () {
-    //     if ($(this).is(':checked')) {
-    //         // Checkbox is checked..
-    //         if (timer !== null) return;
-    //         timer = setInterval(function () {
-    //             console.log(++value);
-    //         }, interval);
-    //     } else {
-    //         // Checkbox is not checked..
-    //         clearInterval(timer);
-    //         timer = null;
-    //     }
-    // });
-
     // $('#main-container').hide();
     Dashboard.init();
 });

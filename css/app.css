@@ -246,11 +246,21 @@ input:checked + .slider:before {
     font-weight: 300;
 }
 
-.panel .panel-heading .panel-title a {
+.panel .panel-heading .panel-title i {
     color: inherit;
+    cursor: pointer;
 }
 
-.panel .panel-heading .panel-title .last {
+.panel .panel-heading .panel-title i:hover {
+    color: #3498db;
+}
+
+.panel .panel-heading .panel-title .latest {
+    color: gray;
+    cursor: default;
+}
+
+.panel .panel-heading .panel-title .latest:hover {
     color: gray;
 }
 
@@ -259,7 +269,7 @@ input:checked + .slider:before {
     flex-wrap: wrap;
 }
 
-.main-table .cbs {
+.main-table .col-sm-9 {
     margin-bottom: 14px;
     word-wrap: break-word;
 }
